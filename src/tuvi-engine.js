@@ -48,7 +48,8 @@ function getSunLongitude(jdn, tz) {
   let DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(DR * M);
   DL += (0.019993 - 0.000101 * T) * Math.sin(DR * 2 * M) + 0.000290 * Math.sin(DR * 3 * M);
   let L = L0 + DL - 0.00569 - 0.00478 * Math.sin((125.04 - 1934.136 * T) * DR);
-  L = L * DR - PI * 2 * Math.floor(L / (PI * 2));
+  L = L * DR;
+  L = L - PI * 2 * Math.floor(L / (PI * 2));
   return Math.floor(L / PI * 6);
 }
 

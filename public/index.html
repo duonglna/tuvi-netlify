@@ -104,12 +104,13 @@ function App() {
     if (!form.year||!form.month||!form.day){setError('Vui lòng nhập đầy đủ!');return}
     setLoading(true);setError('');setChart(null);setLuanGiai(null);
     try{
-      const p=new URLSearchParams({nam:form.year,thang:form.month,ngay:form.day,gio:form.gio,gioi_tinh:form.gioi_tinh,name:form.name,ai:'1'});
+      const p=new URLSearchParams({nam:form.year,thang:form.month,ngay:form.day,gio:form.gio,gioi_tinh:form.gioi_tinh,name:form.name});
       const r=await fetch('/.netlify/functions/api-luan-giai?'+p);
       const d=await r.json();
       if(d.error) throw new Error(d.error);
+      if(!d.chart || !d.chart.thong_tin) throw new Error('Lỗi dữ liệu lá số');
       setChart({...d.chart,name:form.name});
-      setLuanGiai(d.luan_giai);
+      setLuanGiai(d.luan_giai || {});
     }catch(e){setError(e.message)}
     finally{setLoading(false)}
   },[form]);
