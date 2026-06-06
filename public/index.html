@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦊 Tử Vi Đẩu Số — Dì Lệ v2</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0c0c14;color:#d4c8a8;min-height:100vh}
+#root{max-width:960px;margin:0 auto;padding:16px}
+
+.header{text-align:center;padding:24px 16px}
+.header h1{font-size:2em;background:linear-gradient(135deg,#d4a853,#f0c060,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{color:#6a6050;font-size:0.85em}
+
+.card{background:#14141f;border:1px solid #1e1e2e;border-radius:14px;padding:22px;margin-bottom:14px}
+.card h3{color:#d4a853;font-size:1em;margin-bottom:12px}
+
+.form-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.form-group{flex:1;min-width:100px}
+.form-group label{display:block;color:#8a7e60;font-size:0.72em;font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px}
+.form-group input,.form-group select{width:100%;padding:10px 12px;background:#1a1a28;border:1px solid #2a2a3a;border-radius:9px;color:#e0d4b0;font-size:0.95em;outline:none}
+.form-group input:focus,.form-group select:focus{border-color:#d4a853}
+
+.btn{flex:1;padding:12px 20px;border:none;border-radius:10px;font-size:0.95em;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-primary{background:linear-gradient(135deg,#d4a853,#b8860b);color:#0c0c14}
+.btn-primary:hover{box-shadow:0 4px 24px rgba(212,168,83,0.3)}
+.btn-secondary{background:#1a1a28;color:#8a7e60;border:1px solid #2a2a3a}
+.btn-small{flex:0;padding:8px 16px;font-size:0.8em}
+.btn-md{background:#2a1a28;color:#d4a853;border:1px solid #d4a85333;margin-top:10px}
+.btn-md:hover{background:#3a2a38}
+
+.error-msg{background:#2a1018;border:1px solid #5c1a30;color:#e06070;padding:12px 16px;border-radius:9px;font-size:0.85em;margin-bottom:12px}
+.loading{text-align:center;padding:30px 0}
+.spinner{display:inline-block;width:36px;height:36px;border:3px solid #2a2a3a;border-top-color:#d4a853;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Info Grid */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.info-item{background:#1a1a28;border-radius:8px;padding:10px 12px}
+.info-item .label{font-size:0.65em;color:#6a6050;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.info-item .value{font-size:0.9em;color:#d4a853;font-weight:700}
+.info-item .value.sub{font-size:0.78em;color:#a09870}
+
+/* TV Grid */
+.tv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#1e1e2e;border:2px solid #1e1e2e;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.tv-cell{background:#14141f;padding:10px 7px;min-height:110px;position:relative}
+.tv-cell:hover{background:#1a1a2a}
+.tv-cell.highlight{background:#1a1820;border:1px solid #d4a85333}
+.tv-cell.than{box-shadow:inset 0 0 0 1px #b8860b}
+.cell-badge{font-size:0.6em;color:#6a6050;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:4px;display:flex;justify-content:space-between}
+.cell-badge .flag{color:#d4a853;font-size:0.9em}
+.cell-badge .dh{color:#8a7e60;font-size:0.85em}
+.cell-main{font-size:0.75em;color:#d4a853;line-height:1.3;margin-bottom:2px}
+.cell-main .star{display:block;font-weight:600}
+.cell-sub{font-size:0.62em;color:#8a7e60;line-height:1.25;max-height:48px;overflow-y:auto}
+.cell-sub .star{display:inline-block;margin:1px 3px 1px 0;padding:1px 5px;background:#1a1a28;border-radius:3px;white-space:nowrap}
+.cell-empty{color:#3a3020;font-size:0.65em;font-style:italic;text-align:center;margin-top:8px}
+.cell-luan{font-size:0.6em;color:#b8860b;font-style:italic;margin-top:4px;line-height:1.3;max-height:40px;overflow:hidden}
+
+/* Luan Giai Card */
+.luan-text{font-size:0.85em;color:#c0b898;line-height:1.6}
+.luan-text b{color:#d4a853}
+.luan-giai-header{background:rgba(255,215,0,0.08);padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:0.9em;color:#c0b898;border:1px solid rgba(255,215,0,0.15)}
+.luan-section{margin-bottom:16px}
+.luan-section h4{color:#d4a853;font-size:0.95em;margin-bottom:10px;border-bottom:1px solid rgba(255,215,0,0.15);padding-bottom:6px}
+.luan-line{color:#c0b898;line-height:1.8;margin-bottom:6px;font-size:0.88em}
+.luan-line b,.luan-line strong{color:#e8c547}
+.highlight-box{background:rgba(255,215,0,0.06);padding:14px 16px;border-radius:10px;border:1px solid rgba(255,215,0,0.2)}
+
+.legend{display:flex;gap:16px;justify-content:center;margin:8px 0;flex-wrap:wrap;font-size:0.7em}
+.footer{text-align:center;padding:20px;color:#3a3020;font-size:0.7em}
+
+/* Responsive */
+@media(max-width:768px){.tv-cell{min-height:90px;padding:8px 4px}.cell-main{font-size:0.66em}.cell-sub{font-size:0.55em}}
+@media(max-width:480px){.tv-cell{min-height:72px;padding:6px 2px}.cell-badge{font-size:0.5em}.cell-main{font-size:0.58em}.cell-sub{font-size:0.5em;max-height:36px}}
+</style>
+</head>
+<body><div id="root"></div>
+<script type="text/babel">
+const { useState, useCallback } = React;
+
+const CUNG_NAMES = ["Mệnh","Phụ Mẫu","Phúc Đức","Điền Trạch","Quan Lộc","Nô Bộc","Thiên Di","Tật Ách","Tài Bạch","Tử Tức","Phu Thê","Huynh Đệ"];
+const DISPLAY_ORDER = [7,6,1,0, 11,10,9,8, 2,3,4,5];
+const GIO_OPTS = [
+  {v:0,l:"Tý — 0h (23h–1h)"},{v:2,l:"Sửu — 2h (1h–3h)"},{v:4,l:"Dần — 4h (3h–5h)"},{v:6,l:"Mão — 6h (5h–7h)"},
+  {v:8,l:"Thìn — 8h (7h–9h)"},{v:10,l:"Tỵ — 10h (9h–11h)"},{v:12,l:"Ngọ — 12h (11h–13h)"},
+  {v:14,l:"Mùi — 14h (13h–15h)"},{v:16,l:"Thân — 16h (15h–17h)"},{v:18,l:"Dậu — 18h (17h–19h)"},
+  {v:20,l:"Tuất — 20h (19h–21h)"},{v:22,l:"Hợi — 22h (21h–23h)"}
+];
+
+function App() {
+  const [chart, setChart] = useState(null);
+  const [luanGiai, setLuanGiai] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [form, setForm] = useState({name:'',year:1991,month:10,day:24,gio:8,gioi_tinh:'nam'});
+
+  const handleSubmit = useCallback(async (e) => {
+    e?.preventDefault();
+    if (!form.year||!form.month||!form.day){setError('Vui lòng nhập đầy đủ!');return}
+    setLoading(true);setError('');setChart(null);setLuanGiai(null);
+    try{
+      const p=new URLSearchParams({nam:form.year,thang:form.month,ngay:form.day,gio:form.gio,gioi_tinh:form.gioi_tinh,name:form.name,ai:'1'});
+      const r=await fetch('/.netlify/functions/api-luan-giai?'+p);
+      const d=await r.json();
+      if(d.error) throw new Error(d.error);
+      setChart({...d.chart,name:form.name});
+      setLuanGiai(d.luan_giai);
+    }catch(e){setError(e.message)}
+    finally{setLoading(false)}
+  },[form]);
+
+  const downloadMD = useCallback(() => {
+    if(!chart) return;
+    const p=new URLSearchParams({nam:form.year,thang:form.month,ngay:form.day,gio:form.gio,gioi_tinh:form.gioi_tinh,name:form.name});
+    window.open('/.netlify/functions/api-chart?'+p,'_blank');
+  },[chart,form]);
+
+  return (<div>
+    <div className="header"><h1>🦊 Tử Vi Đẩu Số v2</h1><p>Lập lá số — Dì Lệ an sao ✨</p></div>
+
+    <div className="card"><form onSubmit={handleSubmit}>
+      <div className="form-row">
+        <div className="form-group"><label>Họ tên</label><input type="text" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Nhập họ tên..."/></div>
+        <div className="form-group"><label>Giới tính</label><select value={form.gioi_tinh} onChange={e=>setForm({...form,gioi_tinh:e.target.value})}><option value="nam">Nam</option><option value="nu">Nữ</option></select></div>
+      </div>
+      <div className="form-row">
+        <div className="form-group"><label>Năm sinh</label><input type="number" value={form.year} onChange={e=>setForm({...form,year:e.target.value})} min="1900" max="2100" placeholder="1991"/></div>
+        <div className="form-group"><label>Tháng</label><input type="number" value={form.month} onChange={e=>setForm({...form,month:e.target.value})} min="1" max="12" placeholder="10"/></div>
+        <div className="form-group"><label>Ngày</label><input type="number" value={form.day} onChange={e=>setForm({...form,day:e.target.value})} min="1" max="31" placeholder="24"/></div>
+        <div className="form-group"><label>Giờ sinh</label><select value={form.gio} onChange={e=>setForm({...form,gio:parseInt(e.target.value)})}>{GIO_OPTS.map(g=><option key={g.v} value={g.v}>{g.l}</option>)}</select></div>
+      </div>
+      <div className="form-row">
+        <button type="submit" className="btn btn-primary">🔮 Lập Lá Số</button>
+        <button type="button" className="btn btn-secondary" onClick={()=>{setForm({name:'',year:1991,month:10,day:24,gio:8,gioi_tinh:'nam'});setChart(null);setError('')}}>🔄 Nhập lại</button>
+      </div>
+    </form></div>
+
+    {error && <div className="error-msg">❌ {error}</div>}
+    {loading && <div className="loading"><div className="spinner"></div><p style={{color:'#6a6050',marginTop:10}}>Đang an sao...</p></div>}
+    {chart && <ChartView chart={chart} onDownload={downloadMD} />}
+    {luanGiai && <LuanGiaiView lg={luanGiai} chart={chart} />}
+    <div className="footer">🦊 Dì Lệ Tử Vi v2.0 — Powered by lasotuvi</div>
+  </div>);
+}
+
+function ChartView({chart,onDownload}){
+  const info=chart.thong_tin;
+  const vong=chart.vong_dac_biet;
+  return (<div>
+    <div className="card">
+      <h3>📋 Thông tin lá số {chart.name && `— ${chart.name}`}</h3>
+      <div className="info-grid">
+        <InfoItem label="Bản Mệnh" value={info.ban_menh}/>
+        <InfoItem label="Cục" value={info.cuc_so}/>
+        <InfoItem label="Âm Dương" value={`${info.am_duong} (${info.am_duong_menh})`}/>
+        <InfoItem label="Mệnh Chủ" value={info.menh_chu}/>
+        <InfoItem label="Thân Chủ" value={info.than_chu}/>
+        <InfoItem label="Cung Mệnh" value={info.cung_menh}/>
+        <InfoItem label="Cung Thân" value={info.cung_than}/>
+        <InfoItem label="Năm" value={`${info.can_nam} ${info.chi_nam}`}/>
+        <InfoItem label="Tháng" value={`${info.can_thang} ${info.chi_thang}`}/>
+        <InfoItem label="Ngày" value={`${info.can_ngay} ${info.chi_ngay}`}/>
+      </div>
+    </div>
+
+    <div className="card">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+        <h3 style={{margin:0}}>🏠 12 Cung — Lá Số</h3>
+        <button className="btn btn-small btn-md" onClick={onDownload}>📥 Tải Markdown</button>
+      </div>
+      <div className="tv-grid">
+        {DISPLAY_ORDER.map(cungIdx => <TVCell key={cungIdx} cung={chart.cung[cungIdx]} />)}
+      </div>
+      <div className="legend">
+        <span>⭐ Mệnh</span><span>🌟 Thân</span><span>🔴 ĐH = đại hạn</span>
+        <span style={{color:'#d4a853'}}>Chính tinh</span><span style={{color:'#8a7e60'}}>Phụ tinh</span>
+      </div>
+    </div>
+
+    {/* Vòng đặc biệt */}
+    <div className="card">
+      <h3>🔮 Vòng đặc biệt</h3>
+      <div className="info-grid">
+        <InfoItem label="Thái Tuế" value={vong.thai_tue >= 0 ? CUNG_NAMES[vong.thai_tue] : 'N/A'} sub={vong.thai_tue >= 0 ? `cung số ${vong.thai_tue}` : ''}/>
+        <InfoItem label="Lộc Tồn" value={vong.loc_ton >= 0 ? CUNG_NAMES[vong.loc_ton] : 'N/A'}/>
+        <InfoItem label="Tràng Sinh" value={vong.trang_sinh >= 0 ? CUNG_NAMES[vong.trang_sinh] : 'N/A'}/>
+        <InfoItem label="Tuần" value={vong.tuan >= 0 ? CUNG_NAMES[vong.tuan] : 'N/A'}/>
+        <InfoItem label="Triệt" value={vong.triet >= 0 ? CUNG_NAMES[vong.triet] : 'N/A'}/>
+      </div>
+    </div>
+  </div>);
+}
+
+function LuanGiaiView({lg,chart}){
+  const info = chart.thong_tin;
+  
+  // AI mode
+  if(lg.ai_luan_giai){
+    return (<div className="card">
+      <h3>🤖 Luận Giải AI — DeepSeek</h3>
+      <div className="luan-section" style={{whiteSpace:'pre-wrap',lineHeight:1.9,color:'#c0b898',fontSize:'0.9em'}}>
+        {lg.ai_luan_giai}
+      </div>
+    </div>);
+  }
+  
+  // Built-in mode
+  return (<div className="card">
+    <h3>🦊 Luận Giải Chi Tiết</h3>
+    
+    <div className="luan-giai-header">
+      <strong>Mệnh Chủ:</strong> {info.menh_chu} | <strong>Thân Chủ:</strong> {info.than_chu} | <strong>{info.cuc_so}</strong>
+    </div>
+
+    {lg.tong_quan?.menh?.length > 0 && (<div className="luan-section">
+      <h4>🔮 Tổng Quan Mệnh — Thân</h4>
+      {lg.tong_quan.menh.map((line,i)=><p key={i} className="luan-line" dangerouslySetInnerHTML={{__html:line}}/>)}
+    </div>)}
+
+    {lg.cac_cung?.length > 0 && (<div className="luan-section">
+      <h4>🏠 Các Cung Quan Trọng</h4>
+      {lg.cac_cung.map((line,i)=><p key={i} className="luan-line" dangerouslySetInnerHTML={{__html:line}}/>)}
+    </div>)}
+
+    {lg.tuan_triet?.length > 0 && (<div className="luan-section">
+      <h4>⚡ Tuần — Triệt</h4>
+      {lg.tuan_triet.map((line,i)=><p key={i} className="luan-line" dangerouslySetInnerHTML={{__html:line}}/>)}
+    </div>)}
+
+    {lg.tong_hop?.length > 0 && (<div className="luan-section highlight-box">
+      <h4>✨ Tổng Hợp — Nhận Xét Chung</h4>
+      {lg.tong_hop.map((line,i)=><p key={i} className="luan-line" dangerouslySetInnerHTML={{__html:line}}/>)}
+    </div>)}
+  </div>);
+}
+
+function InfoItem({label,value,sub}){
+  return <div className="info-item">
+    <div className="label">{label}</div>
+    <div className="value">{value || 'N/A'}</div>
+    {sub && <div className="value sub">{sub}</div>}
+  </div>;
+}
+
+function TVCell({cung}){
+  const hasStars=(cung.chinh_tinh?.length>0)||(cung.phu_tinh?.length>0);
+  return (<div className={`tv-cell${cung.la_menh?' highlight':''}${cung.la_than?' than':''}`}>
+    <div className="cell-badge">
+      <span>{cung.ten} <span style={{color:'#4a4030'}}>({cung.zodiac})</span></span>
+      <span>
+        {cung.la_menh && <span className="flag">⭐</span>}
+        {cung.la_than && <span className="flag">🌟</span>}
+        <span className="dh">ĐH:{cung.dai_han}</span>
+      </span>
+    </div>
+    {cung.chinh_tinh?.length>0 && <div className="cell-main">{cung.chinh_tinh.map((s,i)=><span key={i} className="star">⭐ {s.ten}</span>)}</div>}
+    {cung.phu_tinh?.length>0 && <div className="cell-sub">{cung.phu_tinh.map((s,i)=><span key={i} className="star">• {s.ten}</span>)}</div>}
+    {!hasStars && <div className="cell-empty">Vô chính diệu</div>}
+    {cung.luan_giai && <div className="cell-luan">💬 {cung.luan_giai.substring(0,60)}...</div>}
+  </div>);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

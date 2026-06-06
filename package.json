@@ -1,0 +1,12 @@
+{
+  "name": "tuvi-netlify",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tử Vi Đẩu Số API - Netlify Functions",
+  "scripts": {
+    "dev": "netlify dev",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {}
+}
