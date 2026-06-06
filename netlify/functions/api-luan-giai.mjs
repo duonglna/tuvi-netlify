@@ -1,7 +1,7 @@
 // Netlify Function: api-luan-giai.mjs
 // Returns chart + AI interpretation from DeepSeek
-import { lapDiaBan, lapThienBan } from './lib/tuvi-engine.js';
-import { buildChartJSON, buildTuviPrompt } from './lib/chart-builder.js';
+import { lapDiaBan, lapThienBan } from './lib/tuvi-engine.mjs';
+import { buildChartJSON, buildTuviPrompt } from './lib/chart-builder.mjs';
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-v4-flash';

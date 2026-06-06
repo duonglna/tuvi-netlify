@@ -162,7 +162,7 @@ export function canChiNgay(nn, tt, nnnn, duongLich = true, tz = 7) {
   let d = nn, m = tt, y = nnnn;
   if (duongLich) [d, m, y] = S2L(nn, tt, nnnn, tz);
   const jd = jdFromDate(d, m, y);
-  return [((jd + 9) % 10) + 1, ((jd + 1) % 12) + 1];
+  return [(jd + 9) % 10 + 1, (jd + 1) % 12 + 1];
 }
 
 export function ngayThangNam(dd, mm, yy, duongLich = true, tz = 7) {
@@ -173,9 +173,9 @@ export function ngayThangNam(dd, mm, yy, duongLich = true, tz = 7) {
 export function ngayThangNamCanChi(nn, tt, nnnn, duongLich = true, tz = 7) {
   let d = nn, m = tt, y = nnnn, nhuan = 0;
   if (duongLich) [d, m, y, nhuan] = S2L(nn, tt, nnnn, tz);
-  const canThang = ((y * 12 + m + 3) % 10) || 10;
-  const canNam = ((y - 4) % 10) || 10;
-  const chiNam = ((y - 4) % 12) || 12;
+  const canThang = (y * 12 + m + 3) % 10 + 1;
+  const canNam = (y - 4) % 10 + 1;
+  const chiNam = (y - 4) % 12 + 1;
   return [canThang, canNam, chiNam];
 }
 
@@ -188,9 +188,12 @@ export function timTuVi(cucSo, ngayAm) {
 }
 
 export function timHoaLinh(chiNam, gioSinh, gioiTinh, amDuongNam) {
-  const idx = [null, null, null, 0, null, null, null, 1, null, null, null, 2][chiNam] || chiNam === 1 ? 1 : chiNam === 5 ? 1 : chiNam === 9 ? 1 : chiNam === 6 ? 2 : chiNam === 10 ? 2 : chiNam === 2 ? 2 : chiNam === 12 ? 3 : chiNam === 4 ? 3 : chiNam === 8 ? 3 : 0;
-  const khoiH = [null, 2, 3, 11, 10][idx] || 2;
-  const khoiL = [null, 4, 11, 4, 11][idx] || 4;
+  let idx = 0;
+  if ([1,5,9].includes(chiNam)) idx = 1;
+  else if ([6,10,2].includes(chiNam)) idx = 2;
+  else if ([12,4,8].includes(chiNam)) idx = 3;
+  const khoiH = [2, 3, 11, 10][idx];
+  const khoiL = [4, 11, 4, 11][idx];
   if (gioiTinh * amDuongNam === -1) return [dichCung(khoiH + 1, -gioSinh), dichCung(khoiL - 1, gioSinh)];
   return [dichCung(khoiH - 1, gioSinh), dichCung(khoiL + 1, -gioSinh)];
 }
@@ -523,7 +526,7 @@ export function lapDiaBan(nn, tt, nnnn, gioSinh, gioiTinh, duongLich = true, tim
 
 export function lapThienBan(nn, tt, nnnn, gioSinh, gioiTinh, ten, diaBan) {
   const chiGio = diaChi[gioSinh];
-  const canGio = ((jdFromDate(nn, tt, nnnn) - 1) * 2 % 10 + gioSinh) % 10 || 10;
+  const canGio = ((jdFromDate(nn, tt, nnnn) - 1) * 2 % 10 + gioSinh) % 10 + 1;
   
   const [canThang, canNam, chiNam] = ngayThangNamCanChi(nn, tt, nnnn, true, 7);
   const [canNgay, chiNgay] = canChiNgay(nn, tt, nnnn, true, 7);

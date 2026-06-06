@@ -1,7 +1,7 @@
 // Netlify Function: api-chart.mjs
 // Returns birth chart JSON
-import { lapDiaBan, lapThienBan } from './lib/tuvi-engine.js';
-import { buildChartJSON } from './lib/chart-builder.js';
+import { lapDiaBan, lapThienBan } from './lib/tuvi-engine.mjs';
+import { buildChartJSON } from './lib/chart-builder.mjs';
 
 export default async function handler(req) {
   if (req.method !== 'POST' && req.method !== 'GET') {
